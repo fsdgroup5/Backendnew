@@ -54,12 +54,26 @@ app.get('/Halls',verifyToken,(req,res)=>{
     })
 })
 
-app.get('/bookingdlts',(req,res)=>{
-  BookingData.find().then(function(Halls){
-      res.send(Halls);
-  })
+
+app.get('/:username',  (req, res) => {
+  
+  const username = req.params.username;
+  console.log(username);
+   BookingData.find({"UserName":username})
+    .then((data)=>{
+        res.send(data);
+       
+    });
 })
 
+app.delete('/remove/:id',(req,res)=>{
+   id = req.params.id;
+   BookingData.findByIdAndDelete({"_id":id})
+  .then(()=>{
+      console.log('success')
+      res.send();
+  })
+})
 
 app.get('/:id',  (req, res) => {
   

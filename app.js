@@ -75,14 +75,7 @@ app.delete('/remove/:id',(req,res)=>{
   })
 })
 
-app.get('/:id',  (req, res) => {
-  
-    const id = req.params.id;
-      HallData.findOne({"_id":id})
-      .then((hall)=>{
-          res.send(hall);
-      });
-  })
+
   
 
 const PORT = (process.env.PORT || 3000);

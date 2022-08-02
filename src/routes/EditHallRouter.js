@@ -2,6 +2,15 @@ const express=require('express');
 const EditHallRouter=new express();
 const HallData=require('../model/Hall')
 
+EditHallRouter.get('/:id',  (req, res) => {
+  
+    const id = req.params.id;
+      HallData.findOne({"_id":id})
+      .then((hall)=>{
+          res.send(hall);
+      });
+  })
+
 
 EditHallRouter.put('',(req,res)=>{
     id=req.body._id,

@@ -22,6 +22,7 @@ const EditHallRouter=require('./src/routes/EditHallRouter');
 const DeleteHallRouter=require('./src/routes/DeleteHallRouter');
 const AdminLoginRouter=require('./src/routes/AdminLoginRouter');
 const UserLoginRouter=require('./src/routes/UserLoginRouter');
+const NewBookingRouter=require('./src/routes/NewBookingRouter');
 
 function verifyToken(req, res, next) {
     if(!req.headers.authorization) {
@@ -47,6 +48,7 @@ app.use('/update',EditHallRouter);
 app.use('/remove',DeleteHallRouter);
 app.use('/adminLogin',AdminLoginRouter);
 app.use('/userLogin',UserLoginRouter);
+app.use('/newBooking',NewBookingRouter);
 
 app.get('/Halls',verifyToken,(req,res)=>{
     HallData.find().then(function(Halls){
@@ -66,7 +68,7 @@ app.get('/:username',  (req, res) => {
     });
 })
 
-app.delete('/remove/:id',(req,res)=>{
+app.delete('/remove_booking/:id',(req,res)=>{
    id = req.params.id;
    BookingData.findByIdAndDelete({"_id":id})
   .then(()=>{
@@ -76,7 +78,6 @@ app.delete('/remove/:id',(req,res)=>{
 })
 
 
-  
 
 const PORT = (process.env.PORT || 3000);
 app.listen(PORT, function(){

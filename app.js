@@ -1,11 +1,13 @@
 var express=require('express');
 const HallData=require('./src/model/Hall');
 const cors = require('cors');
-const  AdminData= require('./src/model/admin');
 const  BookingData= require('./src/model/bookings');
-const  userData= require('./src/model/users');
+const dotenv=require('dotenv').config();
 
-const jwt = require('jsonwebtoken')
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI);
+
+const jwt = require('jsonwebtoken');
 const path = require("path");
 
 var bodyparser=require('body-parser');
@@ -58,7 +60,6 @@ app.get('/Halls',verifyToken,(req,res)=>{
 
 
 app.get('/:username',  (req, res) => {
-  
   const username = req.params.username;
   console.log(username);
    BookingData.find({"UserName":username})

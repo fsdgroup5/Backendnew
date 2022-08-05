@@ -45,21 +45,21 @@ function verifyToken(req, res, next) {
 
 // app.use(cors());
 // app.use(express.static(path.join(__dirname, 'public')));
-app.use("/insert",verifyToken, AddHallRouter);
-app.use('/update',EditHallRouter);
-app.use('/remove',DeleteHallRouter);
-app.use('/adminLogin',AdminLoginRouter);
-app.use('/userLogin',UserLoginRouter);
-app.use('/newBooking',NewBookingRouter);
+app.use("/api/insert",verifyToken, AddHallRouter);
+app.use('/api/update',EditHallRouter);
+app.use('/api/remove',DeleteHallRouter);
+app.use('/api/adminLogin',AdminLoginRouter);
+app.use('/api/userLogin',UserLoginRouter);
+app.use('/api/newBooking',NewBookingRouter);
 
-app.get('/Halls',verifyToken,(req,res)=>{
+app.get('/api/Halls',verifyToken,(req,res)=>{
     HallData.find().then(function(Halls){
         res.send(Halls);
     })
 })
 
 
-app.get('/:username',  (req, res) => {
+app.get('/api/:username',  (req, res) => {
   const username = req.params.username;
   console.log(username);
    BookingData.find({"UserName":username})
@@ -69,7 +69,7 @@ app.get('/:username',  (req, res) => {
     });
 })
 
-app.delete('/remove_booking/:id',(req,res)=>{
+app.delete('/api/remove_booking/:id',(req,res)=>{
    id = req.params.id;
    BookingData.findByIdAndDelete({"_id":id})
   .then(()=>{

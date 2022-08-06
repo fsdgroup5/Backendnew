@@ -59,6 +59,14 @@ app.get('/api/Halls',verifyToken,(req,res)=>{
 })
 
 
+app.get('/api/bookingdtls',verifyToken,function(req,res){
+  BookingData.find().then(function(dtls){
+    // console.log(dtls);
+        res.send(dtls);
+
+  });
+})
+
 app.get('/api/:username',  (req, res) => {
   const username = req.params.username;
   console.log(username);

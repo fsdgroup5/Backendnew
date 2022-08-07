@@ -26,6 +26,7 @@ const DeleteHallRouter=require('./src/routes/DeleteHallRouter');
 const AdminLoginRouter=require('./src/routes/AdminLoginRouter');
 const UserLoginRouter=require('./src/routes/UserLoginRouter');
 const NewBookingRouter=require('./src/routes/NewBookingRouter');
+const employeeRoute = require('./src/routes/employee.route')
 
 function verifyToken(req, res, next) {
     if(!req.headers.authorization) {
@@ -71,6 +72,7 @@ app.use('/api/remove',verifyToken,DeleteHallRouter);
 app.use('/api/adminLogin',AdminLoginRouter);
 app.use('/api/userLogin',UserLoginRouter);
 app.use('/api/newBooking',verifyUserToken,NewBookingRouter);
+app.use('/api/employee', employeeRoute);
 
 app.get('/api/Halls',verifyUserToken,(req,res)=>{
     HallData.find().then(function(Halls){

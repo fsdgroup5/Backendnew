@@ -13,8 +13,10 @@ AdminLoginRouter.post('', (req, res) => {
        res.status(401).send('Invalid Username and password!!')
      } else if(data.username===adminData1.username && data.password===adminData1.password){
        let payload = {subject: adminData1.username+adminData1.password}
+       let payload1={subject: adminData1.password}
        let token = jwt.sign(payload, 'secretKey')
-       res.status(200).send({token})
+       let isAdmin=jwt.sign(payload, 'adminKey')
+       res.status(200).send({token,isAdmin})
      }
      else{
        res.status(401).send('Invalid Username and password!!')

@@ -2,6 +2,7 @@ var express=require('express');
 const HallData=require('./src/model/Hall');
 const cors = require('cors');
 const  BookingData= require('./src/model/bookings');
+const AdminData = require("./src/model/admin");
 const dotenv=require('dotenv').config();
 
 const mongoose = require('mongoose');
@@ -31,10 +32,29 @@ function verifyToken(req, res, next) {
       return res.status(401).send('Unauthorized request')
     }
     let token = req.headers.authorization.split(' ')[1]
+    let isAdmin = req.headers.authorization.split(' ')[2]
     if(token === 'null') {
       return res.status(401).send('Unauthorized request')    
     }
     let payload = jwt.verify(token, 'secretKey')
+    let payload1=jwt.verify(isAdmin, 'adminKey')
+    if(!payload1) {
+      return res.status(401).send('Unauthorized request')    
+    }
+    req.userId = payload.subject
+    next()
+  }
+
+  function verifyUserToken(req, res, next) {
+    if(!req.headers.authorization) {
+      return res.status(401).send('Unauthorized request')
+    }
+    let token = req.headers.authorization.split(' ')[1]
+    if(token === 'null') {
+      return res.status(401).send('Unauthorized request')    
+    }
+    let payload = jwt.verify(token, 'secretKey')
+
     if(!payload) {
       return res.status(401).send('Unauthorized request')    
     }
@@ -46,13 +66,13 @@ function verifyToken(req, res, next) {
 // app.use(cors());
 // app.use(express.static(path.join(__dirname, 'public')));
 app.use("/api/insert",verifyToken, AddHallRouter);
-app.use('/api/update',EditHallRouter);
-app.use('/api/remove',DeleteHallRouter);
+app.use('/api/update',verifyToken,EditHallRouter);
+app.use('/api/remove',verifyToken,DeleteHallRouter);
 app.use('/api/adminLogin',AdminLoginRouter);
 app.use('/api/userLogin',UserLoginRouter);
-app.use('/api/newBooking',NewBookingRouter);
+app.use('/api/newBooking',verifyUserToken,NewBookingRouter);
 
-app.get('/api/Halls',verifyToken,(req,res)=>{
+app.get('/api/Halls',verifyUserToken,(req,res)=>{
     HallData.find().then(function(Halls){
         res.send(Halls);
     })

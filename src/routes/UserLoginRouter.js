@@ -14,7 +14,8 @@ UserLoginRouter.post('', (req, res) => {
      } else if(data.username===userData1.username && data.password===userData1.password){
        let payload = {subject: userData1.username+userData1.password}
        let token = jwt.sign(payload, 'secretKey')
-       res.status(200).send({token})
+       let username=data.username;
+       res.status(200).send({token,username})
      }
      else{
        res.status(401).send('Invalid Username and password!!')

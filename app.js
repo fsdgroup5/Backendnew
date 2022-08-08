@@ -107,6 +107,24 @@ app.delete('/api/remove_booking/:id',(req,res)=>{
 })
 
 
+app.get('/Time/:Hall/:Date/:Timeslot', async (req,res)=>{
+  // console.log(req.body.BookingDetails.Date);
+  dt=req.params.Date
+  hall=req.params.Hall
+  Time=req.params.Timeslot
+  
+  const data = await BookingData.find({DateOfBooking:dt ,HallName:hall,TimeSlot:Time});
+
+  if(data.length === 0){
+    res.status(201).send('error')
+  }
+  else{
+    res.status(200).send('success')
+    console.log(data);
+  }
+    
+  })
+
 
 const PORT = (process.env.PORT || 3000);
 app.listen(PORT, function(){

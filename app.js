@@ -78,7 +78,6 @@ app.get('/api/Halls',verifyUserToken,(req,res)=>{
     })
 })
 
-
 app.get('/api/bookingdtls',verifyToken,function(req,res){
   BookingData.find().then(function(dtls){
     // console.log(dtls);
@@ -90,6 +89,20 @@ app.get('/api/bookingdtls',verifyToken,function(req,res){
 app.get('/api/:username',  (req, res) => {
   const username = req.params.username;
   console.log(username);
+  const date = new Date();
+  // console.log("current Time", date);
+  var ISToffSet = 330; //IST is 5:30; i.e. 60*5+30 = 330 in minutes 
+  offset= ISToffSet*60*1000;
+  var ISTTime = new Date(date.getTime()+offset);
+  console.log(ISTTime)
+
+  let dates=ISTTime.toISOString();
+  let next=new Date();
+   next.setDate(date.getDate() + 7)
+  var today =dates.slice(0, 10);
+  var nextDate =next.toISOString().slice(0, 10);
+  // BookingData.find({"UserName":username,"DateOfBooking":{$gte:date,$lt:next}})
+
    BookingData.find({"UserName":username})
     .then((data)=>{
         res.send(data);
@@ -107,22 +120,35 @@ app.delete('/api/remove_booking/:id',(req,res)=>{
 })
 
 
-app.get('/Time/:Hall/:Date/:Timeslot', async (req,res)=>{
+app.get('/Time/:Hall/:Date/:Timeslot/:Username', async (req,res)=>{
   // console.log(req.body.BookingDetails.Date);
   dt=req.params.Date
   hall=req.params.Hall
   Time=req.params.Timeslot
+  user=req.params.Username
   
+  console.log(user)
   const data = await BookingData.find({DateOfBooking:dt ,HallName:hall,TimeSlot:Time});
+  const data1 = await BookingData.find({DateOfBooking:dt ,UserName:user,TimeSlot:Time});
 
-  if(data.length === 0){
-    res.status(201).send('error')
-  }
-  else{
-    res.status(200).send('success')
+  if(data.length === 0 && data1.length === 0){
+    res.status(200).send('success');
     console.log(data);
   }
-    
+  else if(data.length > 0 && data1.length>0){
+      res.status(202).send('error');
+
+  }
+  else if(data.length > 0){
+      console.log('existssssssssss'); 
+      res.status(401).send('error');
+      console.log(data);
+  }
+  else if(data1.length > 0){
+    console.log('exist'); 
+    res.status(201).send('success')
+    console.log(data);
+  }
   })
 
 

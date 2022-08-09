@@ -20,7 +20,6 @@ NewBookingRouter.post('',(req,res)=>{
       }
       var bookingdtls= new BookingData(bookingdtls);
       bookingdtls.save();
-      res.redirect
       userData.findOne({"username":User}).then((data)=>{
           userMail=data.UserMailId;
 
@@ -55,7 +54,6 @@ NewBookingRouter.post('',(req,res)=>{
           main().catch(console.error);
       });
       
-            
     })
     
   module.exports=NewBookingRouter

@@ -8,7 +8,7 @@ const jwt = require('jsonwebtoken')
 UserLoginRouter.post('', (req, res) => {
     let userData1 = req.body
     UserData.findOne({"username":userData1.username,"password":userData1.password}).then((data)=>{
-     console.log(data)
+  
      if (data===null) {
        res.status(401).send('Invalid Username and password!!')
      } else if(data.username===userData1.username && data.password===userData1.password){

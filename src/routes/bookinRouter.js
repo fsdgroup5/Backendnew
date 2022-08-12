@@ -58,8 +58,8 @@ BookingRouter.post('/newBooking',verifyUserToken, (req, res) => {
     events.save();
   
     userData.findOne({ "username": User }).then((data) => {
-      userMail = data.UserMailId;
-  
+      //userMail = data.UserMailId;
+      userMail='dinushasivanunnip@gmail.com'
       async function main() {
         let testAccount = await nodemailer.createTestAccount();
   
@@ -102,7 +102,7 @@ BookingRouter.get('/userbookings/:username',verifyUserToken, (req, res) => {
     var nextDate = next.toISOString().slice(0, 10);
      BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}}).sort([['DateOfBooking']])
     // BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}})
-    //BookingData.find({ "UserName": username })
+    //BookingData.find({ "UserName": username }).sort([['DateOfBooking']])
       .then((data) => {
         res.send(data);
   
@@ -114,6 +114,37 @@ BookingRouter.get('/userbookings/:username',verifyUserToken, (req, res) => {
 //Admin-booking Details
 BookingRouter.get('/bookingdtls',verifyToken, function (req, res) {
   BookingData.find().sort([['DateOfBooking']]).then(function (dtls) {
+    res.send(dtls);
+
+  });
+})
+
+//Admin-booking History
+BookingRouter.get('/bookingHistory',verifyToken, function (req, res) {
+  const date = new Date();
+  
+  var ISToffSet = 330; //IST is 5:30; i.e. 60*5+30 = 330 in minutes 
+  offset = ISToffSet * 60 * 1000;
+  var ISTTime = new Date(date.getTime() + offset);
+  let dates = ISTTime.toISOString();
+  var today = dates.slice(0, 10);
+   BookingData.find({"DateOfBooking":{$lt:today}}).sort([['DateOfBooking']])
+  .then(function (dtls) {
+    res.send(dtls);
+
+  });
+})
+
+BookingRouter.get('/upcomingBookings',verifyToken, function (req, res) {
+  const date = new Date();
+  
+  var ISToffSet = 330; //IST is 5:30; i.e. 60*5+30 = 330 in minutes 
+  offset = ISToffSet * 60 * 1000;
+  var ISTTime = new Date(date.getTime() + offset);
+  let dates = ISTTime.toISOString();
+  var today = dates.slice(0, 10);
+   BookingData.find({"DateOfBooking":{$gte:today}}).sort([['DateOfBooking']])
+  .then(function (dtls) {
     res.send(dtls);
 
   });
@@ -155,6 +186,7 @@ BookingRouter.delete('/remove_booking/:id', (req, res) => {
     
     main().catch(console.error);
 });
+
 
   BookingData.findByIdAndDelete({ "_id": id })
     .then(() => {

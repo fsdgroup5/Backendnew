@@ -100,9 +100,9 @@ BookingRouter.get('/userbookings/:username',verifyUserToken, (req, res) => {
     next.setDate(date.getDate() + 7)
     var today = dates.slice(0, 10);
     var nextDate = next.toISOString().slice(0, 10);
+     BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}}).sort([['DateOfBooking']])
     // BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}})
-    // BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}})
-    BookingData.find({ "UserName": username })
+    //BookingData.find({ "UserName": username })
       .then((data) => {
         res.send(data);
   
@@ -113,7 +113,7 @@ BookingRouter.get('/userbookings/:username',verifyUserToken, (req, res) => {
 
 //Admin-booking Details
 BookingRouter.get('/bookingdtls',verifyToken, function (req, res) {
-  BookingData.find().then(function (dtls) {
+  BookingData.find().sort([['DateOfBooking']]).then(function (dtls) {
     res.send(dtls);
 
   });
@@ -122,6 +122,40 @@ BookingRouter.get('/bookingdtls',verifyToken, function (req, res) {
 // remove booking
 BookingRouter.delete('/remove_booking/:id', (req, res) => {
   id = req.params.id;
+  BookingData.findOne({"_id":id}).then((data)=>{
+    //userMail=data.UserMailId;
+    userMail='dinushasivanunnip@gmail.com'
+    async function main() {
+      let testAccount = await nodemailer.createTestAccount();
+    
+      let transporter = nodemailer.createTransport({
+        host: "smtp.ethereal.email",
+        service:'gmail',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: 'fsdcgroup5@gmail.com', // generated ethereal user
+          pass: 'xbcfmaobomhrzzxx', // generated ethereal password
+        },
+      });
+    
+      let info = await transporter.sendMail({
+        from: 'fsdcgroup5@gmail.com', // sender address
+        to: userMail, // list of receivers  
+        subject: "ICT Hall Booking Cancelled!!", // Subject line
+        // text: "Hello " +User+ "Your Booking Has Been confirmed", // plain text body
+        html: "<h3>Hello <b style='text-transform: uppercase'>"+data.UserName+"</b> Your Booking Has Been cancelled</h3> <br><b>Booking Date : "+data.DateOfBooking+"</b> <br> <b>HallName : "+data.HallName+"</b> <br> <b>TimeSlot : "+data.TimeSlot+"</b>",
+     
+      });
+    
+      // console.log("Message sent: %s", info.messageId,userMail);
+      
+      // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    }
+    
+    main().catch(console.error);
+});
+
   BookingData.findByIdAndDelete({ "_id": id })
     .then(() => {
       res.send();

@@ -3,17 +3,25 @@ const HallRouter=new express();
 const HallData=require('../model/Hall')
 const {verifyToken, verifyUserToken} = require('../controller/Token');
 // new hall 
-HallRouter.post('/addnewhall',verifyToken,(req,res)=>{
-
-    var Hall={
-        HallName:req.body.Hall.HallName,
-        Seats:req.body.Hall.Seats,
-        Location:req.body.Hall.Location,
-        Image:req.body.Hall.Image
+HallRouter.post('/addnewhall', verifyToken, async (req, res) => {
+    hall = req.body.Hall.HallName;
+    const data = await HallData.find({ "HallName": hall });
+    if (data.length > 0) {
+        res.status(401).send('error');
     }
-    var Hall= new HallData(Hall);
-    Hall.save();
+    else {
+        var Hall = {
+            HallName: req.body.Hall.HallName,
+            Seats: req.body.Hall.Seats,
+            Location: req.body.Hall.Location,
+            Image: req.body.Hall.Image
+        }
+        var Hall = new HallData(Hall);
+        Hall.save();
+        res.status(200).send('success');
+    }
 })
+
 
 // Edit Hall
 HallRouter.get('/update:id',verifyToken,  (req, res) => {

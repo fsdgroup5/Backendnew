@@ -97,7 +97,7 @@ BookingRouter.get('/userbookings/:username',verifyUserToken, (req, res) => {
     var ISTTime = new Date(date.getTime() + offset);
     let dates = ISTTime.toISOString();
     let next = new Date();
-    next.setDate(date.getDate() + 7)
+    next.setDate(date.getDate() + 8)
     var today = dates.slice(0, 10);
     var nextDate = next.toISOString().slice(0, 10);
      BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}}).sort([['DateOfBooking']])
@@ -178,10 +178,6 @@ BookingRouter.delete('/remove_booking/:id', (req, res) => {
         html: "<h3>Hello <b style='text-transform: uppercase'>"+data.UserName+"</b> Your Booking Has Been cancelled</h3> <br><b>Booking Date : "+data.DateOfBooking+"</b> <br> <b>HallName : "+data.HallName+"</b> <br> <b>TimeSlot : "+data.TimeSlot+"</b>",
      
       });
-    
-      // console.log("Message sent: %s", info.messageId,userMail);
-      
-      // console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
     }
     
     main().catch(console.error);
@@ -236,5 +232,13 @@ BookingRouter.get('/timeslot/:Hall/:Date/:Timeslot/:Username', async (req, res) 
   }
 })
 
-
+BookingRouter.get('/datefilter/:startDate/:EndDate',(req,res)=>{
+  startDate=req.params.startDate
+  endDate=req.params.EndDate
+  // BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}})
+  BookingData.find({"DateOfBooking":{$gte:startDate,$lt:endDate}}).sort({"DateOfBooking":1})
+  .then((data) => {
+    res.send(data);
+  });
+})
   module.exports = BookingRouter

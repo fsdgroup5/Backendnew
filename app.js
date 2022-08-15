@@ -20,11 +20,13 @@ const HallRouter = require('./src/routes/hallRouter');
 const AdminLoginRouter = require('./src/routes/AdminLoginRouter');
 const UserLoginRouter = require('./src/routes/UserLoginRouter');
 const BookingRouter = require('./src/routes/bookinRouter');
+const employeeRoute = require('./src/routes/employee.route');
 
 app.use('/api/halls/', HallRouter);
 app.use('/api/booking' , BookingRouter);
 app.use('/api/adminLogin', AdminLoginRouter);
 app.use('/api/userLogin', UserLoginRouter);
+app.use('/api/employee',employeeRoute)
 
 
 const PORT = (process.env.PORT || 3000);

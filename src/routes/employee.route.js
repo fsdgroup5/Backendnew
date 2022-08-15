@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const employeeRoute = express.Router();
 // Employee model
-let Employee = require('../models/Employee');
+let Employee = require('../model/users');
 // Add Employee
 employeeRoute.route('/create').post((req, res, next) => {
   Employee.create(req.body, (error, data) => {
@@ -10,6 +10,7 @@ employeeRoute.route('/create').post((req, res, next) => {
       return next(error)
     } else {
       res.json(data)
+      console.log('Data added successfully')
     }
   })
 });
@@ -20,6 +21,7 @@ employeeRoute.route('/').get((req, res) => {
       return next(error)
     } else {
       res.json(data)
+      console.log('Data displayed successfully')
     }
   })
 })
@@ -30,6 +32,7 @@ employeeRoute.route('/read/:id').get((req, res) => {
       return next(error)
     } else {
       res.json(data)
+      console.log('Data read successfully')
     }
   })
 })

@@ -56,7 +56,7 @@ BookingRouter.post('/newBooking',verifyUserToken, (req, res) => {
     events.save();
   
     userData.findOne({ "username": User }).then((data) => {
-      userMail = data.UserMailId;
+      userMail = data.email;
       // userMail='dinushasivanunnip@gmail.com'
       async function main() {
         let testAccount = await nodemailer.createTestAccount();
@@ -144,7 +144,7 @@ BookingRouter.delete('/remove_booking/:id', (req, res) => {
     userMail=data.UserMailId;
     UserName=data.UserName
     userData.findOne({ "username": UserName }).then((data1) => {
-      mailId=data1.UserMailId
+      mailId=data1.email
       async function main() {
         let testAccount = await nodemailer.createTestAccount();
         let transporter = nodemailer.createTransport({
@@ -221,7 +221,9 @@ BookingRouter.get('/timeslot/:Hall/:Date/:Timeslot/:Username', async (req, res) 
 BookingRouter.get('/datefilter/:startDate/:EndDate',(req,res)=>{
   startDate=req.params.startDate
   endDate=req.params.EndDate
-  // BookingData.find({"UserName":username,"DateOfBooking":{$gte:today,$lt:nextDate}})
+  newdate=new Date(endDate+'T00:00:00Z')
+  newdate.setDate(newdate.getDate() + 1)
+  var endDate = newdate.toISOString().substring(0,10);
   BookingData.find({"DateOfBooking":{$gte:startDate,$lt:endDate}}).sort({"DateOfBooking":1})
   .then((data) => {
     res.send(data);
